@@ -1,33 +1,30 @@
 import requests
 from plyer import notification
+
 def get_air_quality_data():
-	api_key = 'ac21e268-1ad1-4626-a8bf-244a3200d794'
-	url = f'https://api.airvisual.com/v2/nearest_city?key={api_key}'
-	response = requests.get(url)
-	data = response.json()
-	air_quality = data['data']['current']['pollution']['aqius']
-	return air_quality
+    api_key = 'ac21e268-1ad1-4626-a8bf-244a3200d794'
+    url = f'https://api.airvisual.com/v2/nearest_city?key={api_key}'
+    response = requests.get(url)
+    data = response.json()
+    air_quality = data['data']['current']['pollution']['aqius']
+    print(f"Received Air Quality Data: {air_quality}")
+    return air_quality
 
 def show_notification(air_quality):
-	thresholds = [50, 100, 150, 200, 300]
-	messages = [
-		"Air quality is excellent. Enjoy outdoor activities!",
-        "Air quality is above 100. Consider outdoor activities.",
-		"Air quality is above 150. Limit outdoor activities.",
-		"Air quality is above 200. Avoid outdoor activities.",
-		"Air quality is above 300. Stay indoors and keep safe."
-	]
-	for threshold, message in zip(thresholds, messages):
-		if air_quality <= threshold:
-			notification.notify(
-				title=f"Air Quality Alert ({air_quality})",
-				message=message,
-				app_icon=None,
-			)
-			break
+    thresholds = [0, 50, 100, 150, 200, 300]
+    messages = [
+        "Air quality is excellent. Enjoy outdoor activities!",
+        "Air quality is good.",
+        "Air quality is moderate. Consider outdoor activities.",
+        "Air quality is unhealthy for sensitive groups. Limit outdoor activities.",
+        "Air quality is unhealthy. Avoid outdoor activities.",
+        "Air quality is very unhealthy. Stay indoors and keep safe."
+    ]
+    for threshold, message in zip(thresholds, messages):
+        if air_quality <= threshold:
+            print(f"Air Quality Alert ({air_quality}): {message}")
+            break
 
-		
 if __name__ == "__main__":
-	air_quality = get_air_quality_data()
-	show_notification(air_quality)
-	
+    air_quality = get_air_quality_data()
+    show_notification(air_quality)
